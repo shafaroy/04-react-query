@@ -1,0 +1,27 @@
+.card {
+  background-color: #222;
+  color: white;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  display: block;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 2 / 3;
+  background-color: #333;
+}
+
+.title {
+  margin: 0;
+  padding: 8px;
+  font-size: 16px;
+}

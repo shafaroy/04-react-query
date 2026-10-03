@@ -1,0 +1,16 @@
+.form {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.input {
+  width: 300px;
+  padding: 10px 12px;
+}
+
+.button {
+  padding: 10px 16px;
+  cursor: pointer;
+}
