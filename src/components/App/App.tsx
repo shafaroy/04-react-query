@@ -43,8 +43,10 @@ export default function App() {
 
   return (
     <main className={css.container}>
-      <SearchBar onSubmit={handleSearch} />
-
+      <div className={css.topBar}>
+        <p className={css.credit}>Powered by TMDB</p>
+        <SearchBar onSubmit={handleSearch} />
+      </div>
       {isLoading && <Loader />}
 
       {isError && <ErrorMessage />}
@@ -52,8 +54,6 @@ export default function App() {
       {!isLoading && !isError && query && movies.length === 0 && (
         <ErrorMessage message="No movies found for your request." />
       )}
-
-      {movies.length > 0 && <MovieGrid movies={movies} />}
 
       {totalPages > 1 && (
         <ReactPaginate
@@ -68,6 +68,8 @@ export default function App() {
           previousLabel="←"
         />
       )}
+
+      {movies.length > 0 && <MovieGrid movies={movies} />}
     </main>
   );
 }

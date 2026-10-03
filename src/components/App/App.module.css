@@ -34,3 +34,15 @@
   color: white;
   font-weight: bold;
 }
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.credit {
+  margin: 0;
+  font-size: 14px;
+  color: #0a66c2;
+}
