@@ -1,13 +1,17 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import toast, { Toaster } from "react-hot-toast";
 
 import ReactPaginateModule from "react-paginate";
 import type { ReactPaginateProps } from "react-paginate";
 import type { ComponentType } from "react";
 
 import { fetchMovies } from "../../services/movieService";
+import type { Movie } from "../../types/movie";
+
 import SearchBar from "../SearchBar/SearchBar";
 import MovieGrid from "../MovieGrid/MovieGrid";
+import MovieModal from "../MovieModal/MovieModal";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
@@ -26,11 +30,13 @@ const ReactPaginate = (
 export default function App() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["movies", query, page],
     queryFn: () => fetchMovies(query, page),
     enabled: query !== "",
+    placeholderData: keepPreviousData,
   });
 
   const handleSearch = (newQuery: string) => {
@@ -41,19 +47,24 @@ export default function App() {
   const movies = data?.results ?? [];
   const totalPages = data?.total_pages ?? 0;
 
+  useEffect(() => {
+    if (isSuccess && query && movies.length === 0) {
+      toast.error("No movies found for your request.");
+    }
+  }, [isSuccess, query, movies.length]);
+
   return (
     <main className={css.container}>
+      <Toaster position="top-center" />
+
       <div className={css.topBar}>
         <p className={css.credit}>Powered by TMDB</p>
         <SearchBar onSubmit={handleSearch} />
       </div>
+
       {isLoading && <Loader />}
 
       {isError && <ErrorMessage />}
-
-      {!isLoading && !isError && query && movies.length === 0 && (
-        <ErrorMessage message="No movies found for your request." />
-      )}
 
       {totalPages > 1 && (
         <ReactPaginate
@@ -69,7 +80,16 @@ export default function App() {
         />
       )}
 
-      {movies.length > 0 && <MovieGrid movies={movies} />}
+      {movies.length > 0 && (
+        <MovieGrid movies={movies} onSelect={setSelectedMovie} />
+      )}
+
+      {selectedMovie && (
+        <MovieModal
+          movie={selectedMovie}
+          onClose={() => setSelectedMovie(null)}
+        />
+      )}
     </main>
   );
 }
